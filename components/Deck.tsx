@@ -47,8 +47,11 @@ export default function Deck() {
     <div className="deck" aria-label="Sponsor deck">
       <div className="slide" key={s.key}>
         <div>
-          <div className="tag">
-            Sponsor Deck <span>Vibe Coding Colosseum</span>
+          <div className="brand">
+            <img className="logo" src="/logo.png" alt="Vibe Coding Colosseum" />
+            <div className="tag">
+              Sponsor Deck <span>Vibe Coding Colosseum</span>
+            </div>
           </div>
           <h1 className="h1">{s.title}</h1>
           <div className="h2">{s.subtitle}</div>
