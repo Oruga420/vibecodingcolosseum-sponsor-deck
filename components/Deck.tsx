@@ -3,12 +3,36 @@
 import { useEffect, useMemo, useState } from 'react'
 import { slides } from '@/lib/slides'
 
+const THEME_KEY = 'deck-theme'
+
+type DeckTheme = 'dark' | 'light'
+
+function getSystemTheme(): DeckTheme {
+  if (typeof window === 'undefined') return 'dark'
+  return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
+}
+
 export default function Deck() {
   const [idx, setIdx] = useState(0)
+  const [theme, setTheme] = useState<DeckTheme>('dark')
   const s = useMemo(() => slides[idx], [idx])
 
   const prev = () => setIdx((i) => (i - 1 + slides.length) % slides.length)
   const next = () => setIdx((i) => (i + 1) % slides.length)
+
+  useEffect(() => {
+    const stored = typeof window !== 'undefined' ? window.localStorage.getItem(THEME_KEY) : null
+    const initial = stored === 'light' || stored === 'dark' ? (stored as DeckTheme) : getSystemTheme()
+    setTheme(initial)
+    if (typeof document !== 'undefined') {
+      document.documentElement.dataset.theme = initial
+    }
+  }, [])
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') window.localStorage.setItem(THEME_KEY, theme)
+    if (typeof document !== 'undefined') document.documentElement.dataset.theme = theme
+  }, [theme])
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -88,10 +112,16 @@ export default function Deck() {
               <span key={i} className={i === idx ? 'dot on' : 'dot'} />
             ))}
           </div>
-          <div style={{ marginTop: 6 }}>
-            {idx + 1} / {slides.length} (← → or swipe)
-          </div>
+          <div style={{ marginTop: 6 }}>{idx + 1} / {slides.length} (← → or swipe)</div>
         </div>
+
+        <button
+          className="btn"
+          onClick={() => setTheme((t) => (t === 'dark' ? 'light' : 'dark'))}
+          aria-label="Toggle theme"
+        >
+          {theme === 'dark' ? 'Light' : 'Dark'}
+        </button>
         <button className="btn" onClick={next}>
           Next →
         </button>
