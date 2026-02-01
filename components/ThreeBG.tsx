@@ -42,9 +42,10 @@ export default function ThreeBG() {
       blending: THREE.AdditiveBlending,
       uniforms: {
         uTime: { value: 0 },
-        uColorA: { value: new THREE.Color('#ff6ec4') },
-        uColorB: { value: new THREE.Color('#7873f5') },
-        uColorC: { value: new THREE.Color('#4fffb0') }
+        // Match VibeCoding_Coliseo palette
+        uColorA: { value: new THREE.Color('#00c46a') },
+        uColorB: { value: new THREE.Color('#ff2d2d') },
+        uColorC: { value: new THREE.Color('#e3f1ea') }
       },
       vertexShader: `
         uniform float uTime;
