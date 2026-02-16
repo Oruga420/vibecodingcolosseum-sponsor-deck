@@ -25,8 +25,8 @@
   --surface: rgba(255, 255, 255, 0.90);
   --surface-solid: rgba(240, 245, 243, 0.85);
   --border: rgba(0, 0, 0, 0.12);
-  --text: rgba(10, 30, 22, 0.95);
-  --text-muted: rgba(40, 40, 40, 0.75);
+  --text: #0a0a0a;
+  --text-muted: #555555;
   --dot-overlay: rgba(0, 0, 0, 0.035);
   --dot-border: rgba(0, 0, 0, 0.30);
   --shadow: 0 40px 80px rgba(0, 0, 0, 0.10);
@@ -54,8 +54,8 @@
     --surface: rgba(255, 255, 255, 0.90);
     --surface-solid: rgba(240, 245, 243, 0.85);
     --border: rgba(0, 0, 0, 0.12);
-    --text: rgba(10, 30, 22, 0.95);
-    --text-muted: rgba(40, 40, 40, 0.75);
+    --text: #0a0a0a;
+    --text-muted: #555555;
     --dot-overlay: rgba(0, 0, 0, 0.035);
     --dot-border: rgba(0, 0, 0, 0.30);
     --shadow: 0 40px 80px rgba(0, 0, 0, 0.10);
@@ -145,11 +145,20 @@ a {
   margin: 0;
 }
 
+[data-theme="light"] .h1 {
+  color: #0a0a0a;
+}
+
 .h2 {
   font-size: 18px;
   opacity: 0.9;
   margin-top: 12px;
   line-height: 1.5;
+}
+
+[data-theme="light"] .h2 {
+  color: #2a2a2a;
+  opacity: 1;
 }
 
 .kpis {
@@ -172,10 +181,19 @@ a {
   font-weight: 800;
 }
 
+[data-theme="light"] .kpi .v {
+  color: #111111;
+}
+
 .kpi .l {
   font-size: 12px;
   opacity: 0.8;
   margin-top: 4px;
+}
+
+[data-theme="light"] .kpi .l {
+  color: #666666;
+  opacity: 1;
 }
 
 .card {
@@ -207,6 +225,16 @@ a {
 
 .bullets li {
   margin: 8px 0;
+}
+
+[data-theme="light"] .bullets {
+  color: #333333;
+  opacity: 1;
+}
+
+[data-theme="light"] .card h3 {
+  color: #888888;
+  opacity: 1;
 }
 
 .nav {
