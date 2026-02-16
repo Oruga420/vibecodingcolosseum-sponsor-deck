@@ -10,10 +10,12 @@
 :root[data-theme="dark"] {
   --bg: #0b1210;
   --surface: rgba(15, 25, 22, 0.70);
+  --surface-solid: rgba(15, 25, 22, 0.55);
   --border: rgba(255, 255, 255, 0.10);
-  --text: rgba(255, 255, 255, 0.92);
+  --text: rgba(255, 255, 255, 0.95);
   --text-muted: rgba(227, 241, 234, 0.78);
   --dot-overlay: rgba(255, 255, 255, 0.04);
+  --dot-border: rgba(255, 255, 255, 0.35);
   --shadow: 0 40px 80px rgba(0, 0, 0, 0.55);
   color-scheme: dark;
 }
@@ -21,11 +23,13 @@
 :root[data-theme="light"] {
   --bg: #ffffff;
   --surface: rgba(255, 255, 255, 0.90);
-  --border: rgba(0, 0, 0, 0.10);
-  --text: rgba(11, 61, 46, 0.92);
-  --text-muted: rgba(68, 68, 68, 0.82);
+  --surface-solid: rgba(240, 245, 243, 0.85);
+  --border: rgba(0, 0, 0, 0.12);
+  --text: #0a0a0a;
+  --text-muted: #555555;
   --dot-overlay: rgba(0, 0, 0, 0.035);
-  --shadow: 0 40px 80px rgba(0, 0, 0, 0.08);
+  --dot-border: rgba(0, 0, 0, 0.30);
+  --shadow: 0 40px 80px rgba(0, 0, 0, 0.10);
   color-scheme: light;
 }
 
@@ -33,10 +37,12 @@
   :root:not([data-theme]) {
     --bg: #0b1210;
     --surface: rgba(15, 25, 22, 0.70);
+    --surface-solid: rgba(15, 25, 22, 0.55);
     --border: rgba(255, 255, 255, 0.10);
-    --text: rgba(255, 255, 255, 0.92);
+    --text: rgba(255, 255, 255, 0.95);
     --text-muted: rgba(227, 241, 234, 0.78);
     --dot-overlay: rgba(255, 255, 255, 0.04);
+    --dot-border: rgba(255, 255, 255, 0.35);
     --shadow: 0 40px 80px rgba(0, 0, 0, 0.55);
     color-scheme: dark;
   }
@@ -46,16 +52,19 @@
   :root:not([data-theme]) {
     --bg: #ffffff;
     --surface: rgba(255, 255, 255, 0.90);
-    --border: rgba(0, 0, 0, 0.10);
-    --text: rgba(11, 61, 46, 0.92);
-    --text-muted: rgba(68, 68, 68, 0.82);
+    --surface-solid: rgba(240, 245, 243, 0.85);
+    --border: rgba(0, 0, 0, 0.12);
+    --text: #0a0a0a;
+    --text-muted: #555555;
     --dot-overlay: rgba(0, 0, 0, 0.035);
-    --shadow: 0 40px 80px rgba(0, 0, 0, 0.08);
+    --dot-border: rgba(0, 0, 0, 0.30);
+    --shadow: 0 40px 80px rgba(0, 0, 0, 0.10);
     color-scheme: light;
   }
 }
 
-html, body {
+html,
+body {
   height: 100%;
   margin: 0;
   font-family: var(--font-main);
@@ -63,9 +72,13 @@ html, body {
   background: var(--bg);
 }
 
-* { box-sizing: border-box; }
+* {
+  box-sizing: border-box;
+}
 
-a { color: inherit; }
+a {
+  color: inherit;
+}
 
 .deck {
   position: relative;
@@ -77,16 +90,26 @@ a { color: inherit; }
 .bg {
   position: absolute;
   inset: 0;
+  z-index: 0;
 }
 
 .overlay {
   position: absolute;
   inset: 0;
+  z-index: 1;
+  pointer-events: none;
   /* Coliseo: industrial + green/red accents */
   background:
     radial-gradient(1100px 760px at 18% 18%, rgba(0, 196, 106, 0.14), transparent 60%),
     radial-gradient(980px 720px at 82% 22%, rgba(255, 45, 45, 0.10), transparent 62%),
-    linear-gradient(180deg, rgba(0,0,0,0.20), rgba(0,0,0,0.70));
+    linear-gradient(180deg, rgba(0, 0, 0, 0.20), rgba(0, 0, 0, 0.70));
+}
+
+[data-theme="light"] .overlay {
+  background:
+    radial-gradient(1100px 760px at 18% 18%, rgba(0, 196, 106, 0.06), transparent 60%),
+    radial-gradient(980px 720px at 82% 22%, rgba(255, 45, 45, 0.04), transparent 62%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.30), rgba(255, 255, 255, 0.50));
 }
 
 /* Perforated overlay (matches Coliseo site) */
@@ -103,6 +126,7 @@ a { color: inherit; }
 .slide {
   position: absolute;
   inset: 0;
+  z-index: 3;
   display: grid;
   grid-template-columns: 1.2fr 0.8fr;
   gap: 32px;
@@ -125,11 +149,20 @@ a { color: inherit; }
   margin: 0;
 }
 
+[data-theme="light"] .h1 {
+  color: #0a0a0a;
+}
+
 .h2 {
   font-size: 18px;
   opacity: 0.9;
   margin-top: 12px;
   line-height: 1.5;
+}
+
+[data-theme="light"] .h2 {
+  color: #2a2a2a;
+  opacity: 1;
 }
 
 .kpis {
@@ -147,15 +180,34 @@ a { color: inherit; }
   box-shadow: var(--shadow);
 }
 
-.kpi .v { font-size: 22px; font-weight: 800; }
-.kpi .l { font-size: 12px; opacity: 0.8; margin-top: 4px; }
+.kpi .v {
+  font-size: 22px;
+  font-weight: 800;
+}
+
+[data-theme="light"] .kpi .v {
+  color: #111111;
+}
+
+.kpi .l {
+  font-size: 12px;
+  opacity: 0.8;
+  margin-top: 4px;
+}
+
+[data-theme="light"] .kpi .l {
+  color: #666666;
+  opacity: 1;
+}
 
 .card {
   padding: 18px;
   border-radius: 18px;
   border: 1px solid var(--border);
-  background: rgba(15, 25, 22, 0.55);
+  background: var(--surface-solid);
   box-shadow: var(--shadow);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
 }
 
 .card h3 {
@@ -168,10 +220,29 @@ a { color: inherit; }
   font-family: var(--font-mono);
 }
 
-.bullets { margin: 0; padding-left: 18px; line-height: 1.55; opacity: 0.92; }
-.bullets li { margin: 8px 0; }
+.bullets {
+  margin: 0;
+  padding-left: 18px;
+  line-height: 1.55;
+  opacity: 0.92;
+}
+
+.bullets li {
+  margin: 8px 0;
+}
+
+[data-theme="light"] .bullets {
+  color: #333333;
+  opacity: 1;
+}
+
+[data-theme="light"] .card h3 {
+  color: #888888;
+  opacity: 1;
+}
 
 .nav {
+  z-index: 4;
   position: absolute;
   left: 16px;
   right: 16px;
@@ -188,10 +259,13 @@ a { color: inherit; }
   padding: 10px 12px;
   border-radius: 12px;
   border: 1px solid var(--border);
-  background: rgba(15, 25, 22, 0.55);
+  background: var(--surface-solid);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
   color: var(--text);
   font-weight: 800;
   cursor: pointer;
+  transition: border-color .2s, box-shadow .2s;
 }
 
 .nav .btn:hover {
@@ -214,8 +288,9 @@ a { color: inherit; }
   width: 8px;
   height: 8px;
   border-radius: 99px;
-  border: 1px solid rgba(255,255,255,0.35);
+  border: 1px solid var(--dot-border);
   opacity: 0.8;
+  transition: background .2s, border-color .2s;
 }
 
 .dot.on {
@@ -235,7 +310,11 @@ a { color: inherit; }
   width: 56px;
   height: 56px;
   object-fit: contain;
-  filter: drop-shadow(0 8px 24px rgba(0,0,0,0.55));
+  filter: drop-shadow(0 8px 24px rgba(0, 0, 0, 0.55));
+}
+
+[data-theme="light"] .logo {
+  filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.15));
 }
 
 .tag {
@@ -245,7 +324,9 @@ a { color: inherit; }
   border-radius: 999px;
   padding: 8px 12px;
   border: 1px solid var(--border);
-  background: rgba(15, 25, 22, 0.60);
+  background: var(--surface-solid);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
   font-size: 12px;
   font-weight: 800;
   letter-spacing: 0.06em;
